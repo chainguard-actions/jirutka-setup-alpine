@@ -1,6 +1,12 @@
 # jirutka/setup-alpine
 
-Hardened GitHub Action by [Chainguard](https://www.chainguard.dev).
+Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/jirutka/setup-alpine](https://github.com/jirutka/setup-alpine).
+
+## Versions
+
+| Version | Tag | Upstream commit |
+|---------|-----|-----------------|
+| v1.4.1 | [`v1.4.1`](https://github.com/chainguard-actions/setup-alpine/tree/v1.4.1) | — |
 
 ## Privacy
 
