@@ -1,5 +1,7 @@
 # jirutka/setup-alpine
 
+Easily use Alpine Linux on GitHub Actions, with support for QEMU user emulator
+
 Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/jirutka/setup-alpine](https://github.com/jirutka/setup-alpine).
 
 ## Versions

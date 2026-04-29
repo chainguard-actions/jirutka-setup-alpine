@@ -1,5 +1,6 @@
 {
   "owner": "jirutka",
   "name": "setup-alpine",
-  "visibility": ""
+  "visibility": "internal",
+  "description": "Easily use Alpine Linux on GitHub Actions, with support for QEMU user emulator"
 }
