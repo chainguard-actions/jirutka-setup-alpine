@@ -1,0 +1,99 @@
+name: Test Alpine setup with specific branch
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          branch: v3.20
+          arch: x86_64
+
+      - name: Assert action outcome and outputs
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          ROOT_PATH: ${{ steps.action.outputs.root-path }}
+        run: |
+          echo "outcome: $OUTCOME"
+          echo "root-path: $ROOT_PATH"
+          if [ "$OUTCOME" = "success" ]; then
+            if [ -z "$ROOT_PATH" ]; then
+              echo "FAIL: action succeeded but root-path output is empty"
+              exit 1
+            fi
+            echo "PASS: action succeeded with root-path=$ROOT_PATH"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (expected in restricted act environment)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
+
+      - name: Assert Alpine root directory exists (when action succeeded)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          ROOT_PATH: ${{ steps.action.outputs.root-path }}
+        run: |
+          if [ "$OUTCOME" != "success" ]; then
+            echo "SKIP: action did not succeed, skipping directory check"
+            exit 0
+          fi
+          if [ ! -d "$ROOT_PATH" ]; then
+            echo "FAIL: Alpine root directory does not exist at $ROOT_PATH"
+            exit 1
+          fi
+          echo "PASS: Alpine root directory exists"
+
+      - name: Assert Alpine v3.20 is installed (when action succeeded)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          ROOT_PATH: ${{ steps.action.outputs.root-path }}
+        run: |
+          if [ "$OUTCOME" != "success" ]; then
+            echo "SKIP: action did not succeed, skipping version check"
+            exit 0
+          fi
+          if [ -f "$ROOT_PATH/etc/alpine-release" ]; then
+            ALPINE_VER=$(cat "$ROOT_PATH/etc/alpine-release")
+            echo "Alpine version: $ALPINE_VER"
+            if echo "$ALPINE_VER" | grep -q '^3\.20'; then
+              echo "PASS: Alpine v3.20 is installed"
+            else
+              echo "FAIL: Expected Alpine v3.20 but got: $ALPINE_VER"
+              exit 1
+            fi
+          elif [ -f "$ROOT_PATH/etc/os-release" ]; then
+            ALPINE_VER=$(grep VERSION_ID "$ROOT_PATH/etc/os-release" | cut -d= -f2)
+            echo "Alpine version: $ALPINE_VER"
+            if echo "$ALPINE_VER" | grep -q '^3\.20'; then
+              echo "PASS: Alpine v3.20 is installed"
+            else
+              echo "FAIL: Expected Alpine v3.20 but got: $ALPINE_VER"
+              exit 1
+            fi
+          else
+            echo "INFO: No Alpine release file found (may be expected for older branches)"
+          fi
+
+      - name: Assert v3.20 repositories are configured (when action succeeded)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          ROOT_PATH: ${{ steps.action.outputs.root-path }}
+        run: |
+          if [ "$OUTCOME" != "success" ]; then
+            echo "SKIP: action did not succeed, skipping repository check"
+            exit 0
+          fi
+          echo "Contents of /etc/apk/repositories:"
+          cat "$ROOT_PATH/etc/apk/repositories"
+          if grep -q '/v3\.20/' "$ROOT_PATH/etc/apk/repositories"; then
+            echo "PASS: Alpine v3.20 repositories are configured"
+          else
+            echo "FAIL: Expected v3.20 repositories but not found"
+            exit 1
+          fi

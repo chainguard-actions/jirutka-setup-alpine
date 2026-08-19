@@ -343,4 +343,4 @@ endgroup
 
 safe_rootfs_dir=$(printf '%s' "$rootfs_dir" | tr -d '\n\r')
 echo "root-path=$safe_rootfs_dir" >> "$GITHUB_OUTPUT"
-echo "${safe_rootfs_dir}/abin" >> "$GITHUB_PATH"
+echo "$safe_rootfs_dir/abin" >> "$GITHUB_PATH"
