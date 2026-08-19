@@ -9,7 +9,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 | Version | Tag | Upstream commit |
 |---------|-----|-----------------|
-| v1.4.1 | [`v1.4.1`](https://github.com/chainguard-actions/jirutka-setup-alpine/tree/v1.4.1) | — |
+| v1.4.1 | [`v1.4.1`](https://github.com/chainguard-actions/jirutka-setup-alpine/tree/v1.4.1) | [`ae3b3dd`](https://github.com/jirutka/setup-alpine/commit/ae3b3ddba35054804fc4a3507b519fa7e8152050) |
 
 ## Privacy
 
