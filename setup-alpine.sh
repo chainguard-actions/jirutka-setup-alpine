@@ -148,6 +148,10 @@ case "$INPUT_BRANCH" in
 	*) die 'Invalid input parameter: branch' \
 	       "Expected 'v[0-9].[0-9]+' (e.g. v3.15), edge, or latest-stable, but got: $INPUT_BRANCH."
 esac
+if ! [[ "$INPUT_BRANCH" =~ ^(v[0-9]+\.[0-9]+|edge|latest-stable)$ ]]; then
+	die 'Invalid input parameter: branch' \
+	    "Expected 'v[0-9].[0-9]+' (e.g. v3.15), edge, or latest-stable."
+fi
 
 for path in $INPUT_EXTRA_KEYS; do
 	if ! [ -r "$GITHUB_WORKSPACE/$path" ]; then
